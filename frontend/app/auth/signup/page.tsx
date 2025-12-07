@@ -23,7 +23,7 @@ export default function SignupPage() {
         name: userName,
         email: userEmail,
         password: userPassword,
-        adminKey: adminCode || undefined,
+        adminkey: adminCode || undefined,
       });
 
       setFormSuccess("Account created successfully. You can now login.");

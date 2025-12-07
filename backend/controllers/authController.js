@@ -6,45 +6,49 @@ const bcrypt =  require("bcryptjs");
 
 
 const signupUser = async (req, res) => {
-  try{
-    const {name, email, password, adminkey} = req.body;
-    if( !name || !email || !password){
-        return res.status(400).json({message : "All fields are requird"});
+  try {
+    const { name, email, password, adminkey } = req.body;
+
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
     }
 
-    const userExists = await prisma.user.findUnique({where : {email}});
-    if(userExists){
-        return res.status(400).json({message :"User already preset with this email"});
+    const userExists = await prisma.user.findUnique({
+      where: { email }
+    });
+
+    if (userExists) {
+      return res.status(400).json({ message: "User already exists with this email" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    let role ="customer";
+    let role = "customer";
 
-    if(adminkey){
-        if(adminkey === process.env.ADMIN_KEY){
-            role ="admin";
-        }
-        else{
-            return res.status(403).json({message : "Invalid admin key"});
-        }
+    if (adminkey !== undefined) {
+      if (adminkey === process.env.ADMIN_KEY) {
+        role = "admin";  // Make admin
+      } else {
+        return res.status(403).json({ message: "Invalid admin key" });
+      }
     }
 
     await prisma.user.create({
-        data : {
-            name,
-            email,
-            passwordHash : hashedPassword,
-            role
-        }
+      data: {
+        name,
+        email,
+        passwordHash: hashedPassword,
+        role
+      }
     });
 
-    return res.status(201).json({message : `User registered successfully with role ${role}`});
+    return res.status(201).json({
+      message: `User registered successfully with role: ${role}`
+    });
 
-  }
-  catch(e){
-    console.log("signup user error : ",e);
-    return res.status(500).json({message : "Internal Server Error"});
+  } catch (e) {
+    console.log("signup user error:", e);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
