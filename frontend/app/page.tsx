@@ -22,7 +22,6 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen bg-gray-50">
-      {/* HERO CAROUSEL */}
       <div className="relative w-full h-[60vh] md:h-[75vh] overflow-hidden">
         
         {slides.map((image, index) => (
@@ -37,7 +36,6 @@ export default function HomePage() {
               className="w-full h-full object-cover"
             />
 
-            {/* Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-black/40"></div>
           </div>
         ))}
